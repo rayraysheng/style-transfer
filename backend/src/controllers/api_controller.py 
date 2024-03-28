@@ -1,0 +1,53 @@
+from flask import Blueprint, request, jsonify, send_file
+from ..services.image_service import ImageService
+from ..services.text_to_image_service import TextToImageService
+from ..services.style_transfer_service import StyleTransferService
+
+# Instantiate services
+content_image_service = ImageService(upload_folder='../static/images/content')
+style_image_service = ImageService(upload_folder='../static/images/style')
+result_image_service = ImageService(storage_folder='../static/images/result')
+
+text_to_image_service = TextToImageService(api_url='https://api.example.com', api_key='your_api_key') #UPDATE
+style_transfer_service = StyleTransferService(model_path='/path/to/style_transfer_model') #UPDATE
+
+api_blueprint = Blueprint('api', __name__)
+
+@app.route('/upload/content', methods=['POST'])
+def upload_content_image():
+    """
+    Endpoint for uploading content images.
+    """
+    return content_image_service.upload_image(request, 'content')
+
+@app.route('/upload/style', methods=['POST'])
+def upload_style_image():
+    """
+    Endpoint for uploading style images.
+    """
+    return style_image_service.upload_image(request, 'style')
+
+
+@api_blueprint.route('/generate', methods=['POST'])
+def generate_style_image():
+    text_description = request.form.get('text')
+    if not text_description:
+        return jsonify({'error': 'No text description provided'}), 400
+    # Use the TextToImageService to generate a style image
+    # Example: style_image_path = text_to_image_service.generate_style_image(text_description)
+    return jsonify({'message': 'Style image generated successfully', 'path': style_image_path})
+
+@api_blueprint.route('/synthesize', methods=['POST'])
+def synthesize_image():
+    content_image_path = request.form.get('content_image_path')
+    style_image_path = request.form.get('style_image_path')
+    if not content_image_path or not style_image_path:
+        return jsonify({'error': 'Missing image paths'}), 400
+    # Use the StyleTransferService to perform style transfer
+    # Example: output_image_path = style_transfer_service.perform_style_transfer(content_image_path, style_image_path)
+    return jsonify({'message': 'Image synthesized successfully', 'path': output_image_path})
+
+@api_blueprint.route('/result/<filename>', methods=['GET'])
+def get_result_image(filename):
+    # Use the StorageService to retrieve the final image
+    return send_file(image_path, mimetype='image/jpeg')

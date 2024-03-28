@@ -1,0 +1,11 @@
+import requests
+
+class TextToImageService:
+    def __init__(self, api_url, api_key):
+        self.api_url = api_url
+        self.api_key = api_key
+
+    def generate_style_image(self, text_description):
+        # Implement the interaction with ChatGPT to generate an image
+        # This is a placeholder for the actual implementation
+        pass
