@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Style Transfer Test Interface</title>
+</head>
+<body>
+
+<h1>Style Transfer Testing Interface</h1>
+
+<h2>Upload Content Image</h2>
+<form id="uploadForm" enctype="multipart/form-data">
+    <input type="file" id="imageInput" name="image" required>
+    <button type="button" onclick="uploadImage()">Upload Image</button>
+</form>
+<p id="uploadResult"></p>
+
+<h2>Select Default Styles</h2>
+<div id="styleOptions"></div>
+<p id="styleResult"></p>
+
+<!-- Display default style images -->
+<h2>Default Style Images</h2>
+<div id="default-styles">
+    <!-- Loop through default styles and display images -->
+    {% for style in default_styles %}
+        <img src="{{ style.url }}" alt="Default Style {{ style.id }}">
+    {% endfor %}
+</div>
+
+<h2>Generate Style Image via ChatGPT</h2>
+<textarea id="styleCaption" rows="4" cols="50" placeholder="Enter description for the style image..."></textarea><br>
+<button type="button" onclick="generateStyleImage()">Generate Style Image</button>
+<p id="generationResult"></p>
+
+<h2>Perform Style Transfer</h2>
+<button type="button" onclick="performStyleTransfer()">Transfer Style</button>
+<p id="transferResult"></p>
+
+<script>
+const apiUrl = 'http://localhost:8080/api';  // Update with your Flask API URL if different
+
+function uploadImage() {
+    var formData = new FormData();
+    var imageFile = document.getElementById("imageInput").files[0];
+    formData.append("image", imageFile);
+
+    fetch(`${apiUrl}/upload/content`, {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => document.getElementById("uploadResult").innerText = 'Uploaded! Image Path: ' + data.contentImageUrl)
+    .catch(error => document.getElementById("uploadResult").innerText = 'Error: ' + error);
+}
+
+function fetchDefaultStyles() {
+    fetch(`${apiUrl}/default-styles`)
+    .then(response => response.json())
+    .then(data => {
+        const stylesContainer = document.getElementById("styleOptions");
+        stylesContainer.innerHTML = '';
+        data.styles.forEach(style => {
+            const styleButton = document.createElement("button");
+            styleButton.innerText = style.url;
+            styleButton.onclick = () => selectStyle(style.url);
+            stylesContainer.appendChild(styleButton);
+        });
+    })
+    .catch(error => document.getElementById("styleResult").innerText = 'Error: ' + error);
+}
+
+function selectStyle(styleUrl) {
+    document.getElementById("styleResult").innerText = 'Selected Style: ' + styleUrl;
+    sessionStorage.setItem("selectedStyleUrl", styleUrl);
+}
+
+function generateStyleImage() {
+    const caption = document.getElementById("styleCaption").value;
+    fetch(`${apiUrl}/style-generation`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ caption: caption })
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById("generationResult").innerText = 'Generated Style Image Path: ' + data.styleImageUrl;
+        sessionStorage.setItem("generatedStyleUrl", data.styleImageUrl);
+    })
+    .catch(error => document.getElementById("generationResult").innerText = 'Error: ' + error);
+}
+
+function performStyleTransfer() {
+    const contentUrl = sessionStorage.getItem("contentImageUrl");
+    const styleUrl = sessionStorage.getItem("selectedStyleUrl") || sessionStorage.getItem("generatedStyleUrl");
+    fetch(`${apiUrl}/synthesis`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ contentImageUrl: contentUrl, styleImageUrl: styleUrl })
+    })
+    .then(response => response.json())
+    .then(data => document.getElementById("transferResult").innerText = 'Result Image URL: ' + data.resultImageUrl)
+    .catch(error => document.getElementById("transferResult").innerText = 'Error: ' + error);
+}
+
+// Initial fetch of default styles
+window.onload = fetchDefaultStyles;
+</script>
+
+</body>
+</html>

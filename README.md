@@ -6,7 +6,7 @@ To run the project in development mode with hot reloading enabled:
 
 docker-compose up --build
 
-The Flask backend will be available at `http://localhost:5000`, and the React frontend will be accessible at `http://localhost:3000`.
+The Flask backend will be available at `http://localhost:8080`, and the React frontend will be accessible at `http://localhost:3000`.
 
 #### Production
 

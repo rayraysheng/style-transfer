@@ -1,9 +1,11 @@
 import React from 'react';
+import TestInterface from './components/TestInterface';
 
 function App() {
   return (
-    <div>
-      <h1>Welcome to Pixel Fusion!</h1>
+    <div className="App">
+      <h1>welcome to pixel fusion</h1>
+      <TestInterface />
     </div>
   );
 }
