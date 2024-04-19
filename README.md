@@ -1,5 +1,14 @@
 ### Running the Project
 
+#### Setting the local environment file
+
+In the /backend directory, make a file called .env
+
+Write the following lines in the .env file:
+
+OPENAI_API_KEY={api_key}
+BASE_URL=http://localhost:8080
+
 #### Development
 
 To run the project in development mode with hot reloading enabled:
@@ -23,5 +32,5 @@ This setup will build the React application into static files served by Nginx an
 
 To stop and remove the containers, networks, and volumes created by `docker-compose`:
 
-docker-compose down -v
+docker-compose down -v --rmi all
 

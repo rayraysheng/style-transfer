@@ -5,6 +5,8 @@ services:
       context: .
       dockerfile: backend/Dockerfile
       target: development # Change to production as needed
+    env_file:
+      - backend/.env
     environment:
       - FLASK_ENV=development
     ports:
@@ -17,6 +19,8 @@ services:
       context: .
       dockerfile: frontend/Dockerfile
       target: development # Change to production as needed
+    env_file:
+      - backend/.env
     ports:
       - "3000:3000"
     volumes:

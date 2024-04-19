@@ -33,8 +33,12 @@ def generate_style():
     caption = request.json.get('caption', '')
     if not caption:
         return jsonify({"error": "Caption is required"}), 400
-    style_image_url = generate_style_image(caption)
+
+    output_path = generate_style_image(caption)  # This saves the image and returns the local path
+    style_image_url = f"{BASE_URL}/" + output_path.strip(".")
+
     return jsonify({"styleImageUrl": style_image_url}), 201
+
 
 @app.route('/api/synthesis', methods=['POST'])
 def synthesize_image():
@@ -61,6 +65,3 @@ def refresh_image():
     new_style_url = generate_style_image(caption)  # Re-generate style image with the same caption
     new_result_url = perform_style_transfer(content_url, new_style_url)
     return jsonify({"newResultImageUrl": new_result_url}), 201
-
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)

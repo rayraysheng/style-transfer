@@ -4,6 +4,9 @@ const TestInterface = () => {
     const [defaultStyles, setDefaultStyles] = useState([]);
     const [contentImageUrl, setContentImageUrl] = useState('');
 
+    const [isLoading, setIsLoading] = useState(false);
+    const [styleImageUrl, setStyleImageUrl] = useState('');
+
     const apiUrl = 'http://localhost:8080/api'; // Update with your Flask API URL if different
     const resourceUrl = 'http://localhost:8080';
 
@@ -51,9 +54,32 @@ const TestInterface = () => {
 
     // Function to generate style image
     const generateStyleImage = () => {
-        // Implement the logic for generating style image
-        // You can use the styleCaption state here
+        const styleCaption = document.getElementById("styleCaption").value;
+        if (!styleCaption.trim()) {
+            alert("Please enter a description for the style image.");
+            return;
+        }
+    
+        setIsLoading(true);
+    
+        fetch(`${apiUrl}/style-generation`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ caption: styleCaption }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            setStyleImageUrl(data.styleImageUrl);
+            setIsLoading(false);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            setIsLoading(false);
+        });
     };
+    
 
     return (
         <div>
@@ -92,6 +118,13 @@ const TestInterface = () => {
             <h2>Generate Style Image via ChatGPT</h2>
             <textarea id="styleCaption" rows="4" cols="50" placeholder="Enter description for the style image..."></textarea><br />
             <button type="button" onClick={generateStyleImage}>Generate Style Image</button>
+            {isLoading && <p>Generating style image, please wait...</p>} {/* Display loading message when generating image */}
+            {styleImageUrl && (
+                <div>
+                    <h2>Generated Style Image</h2>
+                    <img src={styleImageUrl} alt="Generated Style" />
+                </div>
+            )}
             <p id="generationResult"></p>
 
             <h2>Perform Style Transfer</h2>
