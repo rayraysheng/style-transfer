@@ -16,7 +16,3 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 # OpenAI API settings
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-
-# TensorFlow Lite model paths
-TF_LITE_STYLE_PREDICT_MODEL = os.path.join(BASE_DIR, 'static/models/style_predict.tflite')
-TF_LITE_STYLE_TRANSFER_MODEL = os.path.join(BASE_DIR, 'static/models/style_transfer.tflite')

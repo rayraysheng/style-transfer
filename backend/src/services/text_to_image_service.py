@@ -14,12 +14,12 @@ def print_env_file_contents():
     for key in os.environ:
         print(f"{key}: {os.environ[key]}")
 
-def generate_style_image(description, output_path="./static/images/style/generated.png"):
+def generate_style_image(description, output_path="static/images/style/generated.png"):
     """
     Generate a style image from a text description using OpenAI's API, designed to create abstract and
     highly stylized images suitable for use as style images in style transfer.
     """
-    prompt = f"Create a highly abstract and stylized painting that visually represents the following theme, be sure to use exaggerated colors and shapes that really highlight the unique mood and style that the prompt warrants, make it a suitable image to use as the style image in style transfer: {description}"
+    prompt = f"Create a highly abstract and stylized painting that visually represents the theme of the following prompt, be sure to use exaggerated colors and shapes that really highlight the unique mood and style that the prompt warrants, make it a suitable image to use as the style image in style transfer. Do NOT use too many lines, geometric shapes are good, emphasize color schemes and shape patterns. Really represent how the prompt FEELS: {description}"
 
     # Load .env variables if available; not strictly necessary in Docker if env_file is used
     load_dotenv()  # It will look for an .env file in the working directory by default or use the absolute path if needed

@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
-from controllers.api_controller import upload_content_image, get_default_styles, generate_style, synthesize_image, download_image, refresh_image
+from controllers.api_controller import upload_content_image, get_default_styles, generate_style, synthesize_image, download_image
 
 def create_app():
     app = Flask(__name__)
@@ -17,7 +17,6 @@ def create_app():
     app.add_url_rule('/api/style-generation', view_func=generate_style, methods=['POST'])
     app.add_url_rule('/api/synthesis', view_func=synthesize_image, methods=['POST'])
     app.add_url_rule('/api/result', view_func=download_image, methods=['GET'])
-    app.add_url_rule('/api/refresh', view_func=refresh_image, methods=['POST'])
 
     return app
 

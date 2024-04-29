@@ -2,10 +2,14 @@ import React, { useState, useEffect } from 'react';
 
 const TestInterface = () => {
     const [defaultStyles, setDefaultStyles] = useState([]);
-    const [contentImageUrl, setContentImageUrl] = useState('');
-
     const [isLoading, setIsLoading] = useState(false);
+
+    const [contentImageUrl, setContentImageUrl] = useState('');
     const [styleImageUrl, setStyleImageUrl] = useState('');
+
+    const [stylizedImageUrl, setStylizedImageUrl] = useState('');
+    const [blendedImageUrl, setBlendedImageUrl] = useState('');
+
 
     const apiUrl = 'http://localhost:8080/api'; // Update with your Flask API URL if different
     const resourceUrl = 'http://localhost:8080';
@@ -37,8 +41,34 @@ const TestInterface = () => {
 
     // Function to perform style transfer
     const performStyleTransfer = () => {
-        // Implement the logic for performing style transfer
-        // You can use contentImageUrl and selectedStyleUrl states here
+        if (!contentImageUrl || !styleImageUrl) {
+            alert("Please ensure both content and style images are selected.");
+            return;
+        }
+
+        setIsLoading(true);
+
+        fetch(`${apiUrl}/synthesis`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                contentImageUrl: contentImageUrl,
+                styleImageUrl: styleImageUrl
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            setStylizedImageUrl(data.stylizedImageUrl);
+            setBlendedImageUrl(data.blendedImageUrl);
+            setIsLoading(false);
+            console.log(data); // You may want to do something with this data
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            setIsLoading(false);
+        });
     };
 
     // Load default styles when the component mounts
@@ -49,7 +79,7 @@ const TestInterface = () => {
     // Function to select a style
     const selectStyle = (styleUrl) => {
         console.log('Selected Style:', styleUrl);
-        // You can perform any other action here when a style is selected
+        setStyleImageUrl(styleUrl);
     };
 
     // Function to generate style image
@@ -130,6 +160,22 @@ const TestInterface = () => {
             <h2>Perform Style Transfer</h2>
             <button type="button" onClick={performStyleTransfer}>Transfer Style</button>
             <p id="transferResult"></p>
+
+            {/* Display the stylized and blended images if available */}
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
+                {stylizedImageUrl && (
+                    <div style={{ flex: 1 }}>
+                        <h3>Stylized Image</h3>
+                        <img src={stylizedImageUrl} alt="Stylized Image" style={{ width: '100%', height: 'auto' }} />
+                    </div>
+                )}
+                {blendedImageUrl && (
+                    <div style={{ flex: 1 }}>
+                        <h3>Blended Image</h3>
+                        <img src={blendedImageUrl} alt="Blended Image" style={{ width: '100%', height: 'auto' }} />
+                    </div>
+                )}
+            </div>
         </div>
     );
 };

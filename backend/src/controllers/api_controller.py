@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, send_file
 import os
 from dotenv import load_dotenv
 
-from services.image_service import save_image, get_image_path, delete_image
+from services.image_service import save_image, get_image_path, delete_image, save_stylized_image_url
 from services.style_transfer_service import perform_style_transfer
 from services.text_to_image_service import generate_style_image
 
@@ -10,7 +10,7 @@ load_dotenv()
 
 app = Flask(__name__)
 
-BASE_URL = os.getenv('BASE_URL', 'http://localhost:8080')
+BASE_URL = os.getenv('BASE_URL', 'http://localhost:8080/')
 
 @app.route('/api/upload/content', methods=['POST'])
 def upload_content_image():
@@ -39,15 +39,19 @@ def generate_style():
 
     return jsonify({"styleImageUrl": style_image_url}), 201
 
-
 @app.route('/api/synthesis', methods=['POST'])
 def synthesize_image():
     content_url = request.json.get('contentImageUrl')
     style_url = request.json.get('styleImageUrl')
     if not content_url or not style_url:
         return jsonify({"error": "Both content and style image URLs are required"}), 400
-    result_url = perform_style_transfer(content_url, style_url)
-    return jsonify({"resultImageUrl": result_url}), 201
+
+    # Perform style transfer, which returns a tuple of the stylized image URL and the blended image URL
+    stylized_url, blended_url = perform_style_transfer(content_url, style_url)
+
+    # Save the stylized images and get the URLs to access them
+    return jsonify({"stylizedImageUrl": stylized_url, "blendedImageUrl": blended_url}), 201
+
 
 @app.route('/api/result', methods=['GET'])
 def download_image():
@@ -55,13 +59,3 @@ def download_image():
     if not image_path:
         return jsonify({"error": "Image path is required"}), 400
     return send_file(image_path, as_attachment=True)
-
-@app.route('/api/refresh', methods=['POST'])
-def refresh_image():
-    caption = request.json.get('caption')
-    content_url = request.json.get('contentImageUrl')
-    if not caption or not content_url:
-        return jsonify({"error": "Caption and content image URL are required"}), 400
-    new_style_url = generate_style_image(caption)  # Re-generate style image with the same caption
-    new_result_url = perform_style_transfer(content_url, new_style_url)
-    return jsonify({"newResultImageUrl": new_result_url}), 201
