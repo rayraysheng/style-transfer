@@ -7,6 +7,7 @@ In the /backend directory, make a file called .env
 Write the following lines in the .env file:
 
 OPENAI_API_KEY={api_key}
+
 BASE_URL=http://localhost:8080
 
 #### Development

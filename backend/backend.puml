@@ -1,0 +1,28 @@
+@startuml
+
+package "Backend" {
+    [app.py] <<File>>
+    
+    folder "controllers" {
+        [api_controllers.py] <<File>>
+    }
+    
+    folder "services" {
+        [image_service.py] <<File>>
+        [style_transfer_service.py] <<File>>
+        [text_to_image_service.py] <<File>>
+    }
+
+    [TensorFlow] <<External>>
+    [OpenAI API] <<External>>
+
+    [app.py] --> [api_controllers.py] : "Calls"
+    [api_controllers.py] --> [image_service.py] : "Calls"
+    [api_controllers.py] --> [style_transfer_service.py] : "Calls"
+    [api_controllers.py] --> [text_to_image_service.py] : "Calls"
+    
+    [style_transfer_service.py] --> [TensorFlow] : "Integrates"
+    [text_to_image_service.py] --> [OpenAI API] : "HTTP Requests"
+}
+
+@enduml
