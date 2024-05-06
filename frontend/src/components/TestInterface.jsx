@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './style.css';
 
 const TestInterface = () => {
     const [defaultStyles, setDefaultStyles] = useState([]);
@@ -112,69 +113,102 @@ const TestInterface = () => {
     
 
     return (
-        <div>
-            <h1>Style Transfer Testing Interface</h1>
-
-            <h2>Upload Content Image</h2>
-            <input type="file" id="imageInput" name="image" required />
-            <button type="button" onClick={uploadImage}>Upload Image</button>
-            <p id="uploadResult"></p>
-
-            {/* Display uploaded content image */}
-            {contentImageUrl && (
-                <div>
-                    <h2>Uploaded Content Image</h2>
-                    <img src={contentImageUrl} alt="Uploaded Content Image" />
+        <div className='wrapper'>
+            {/* <h1 className="">Style Transfer Testing Interface</h1> */}
+            <div className='content-image-container'>
+                <div className='title-container'>
+                    <div className='title'>
+                        <img className="logo-img" src="images\logo.png" alt="Logo"/> 
+                        <h1>PIXEL FUSION</h1>
+                    </div>
                 </div>
-            )}
-
-            <h2>Select Default Styles</h2>
-            <div id="styleOptions">
-                {defaultStyles.map((style, index) => (
-                    <button key={index} onClick={() => selectStyle(style.url)}>
-                        {style.url}
-                    </button>
-                ))}
+                <div className='image-upload-container'>
+                    <h2>Upload Content Image</h2> 
+                    <input type="file" id="imageInput" name="image" required />
+                    <button type="button" onClick={uploadImage}>Upload Image</button>
+                    {/* <div id="preview"> */}
+                        <p id="uploadResult"></p>
+                        {/* Display uploaded content image */}
+                        {contentImageUrl && (
+                            <div id="preview">
+                                <img src={contentImageUrl} alt="Uploaded Content Image" />
+                            </div>
+                        )}
+                    {/* </div> */}
+                </div>
             </div>
 
-            {/* Display default style images */}
-            <h2>Default Style Images</h2>
-            <div id="default-styles">
-                {defaultStyles.map((style, index) => (
-                    <img key={index} src={style.url} alt={`Default Style ${index + 1}`} />
-                ))}
-            </div>
+            <div className='image-mood-container'>
+                <h1>What is the Image Mood?</h1>
+                <div className="mood-container">
+                    <div className="left-section">
+                        <h2>Select Default Styles</h2>
+                        <div className='mood-buttons'>
+                            <div id="styleOptions">
+                                {defaultStyles.map((style, index) => (
+                                    <button key={index} onClick={() => selectStyle(style.url)}>
+                                        {style.url}
+                                    </button>
+                                ))}
+                            </div>
 
-            <h2>Generate Style Image via ChatGPT</h2>
-            <textarea id="styleCaption" rows="4" cols="50" placeholder="Enter description for the style image..."></textarea><br />
-            <button type="button" onClick={generateStyleImage}>Generate Style Image</button>
-            {isLoading && <p>Generating style image, please wait...</p>} {/* Display loading message when generating image */}
-            {styleImageUrl && (
-                <div>
-                    <h2>Generated Style Image</h2>
-                    <img src={styleImageUrl} alt="Generated Style" />
+                            {/* Display default style images */}
+                            {/* <h2>Default Style Images</h2>
+                            <div id="default-styles">
+                                {defaultStyles.map((style, index) => (
+                                    <img key={index} src={style.url} alt={`Default Style ${index + 1}`} />
+                                ))}
+                            </div> */}
+                        </div>
+                        
+                        <h2>Generate Style Image via ChatGPT</h2>
+                        <div className='chat-container'>
+                            <textarea id="styleCaption" rows="4" cols="50" placeholder="Enter description for the style image..."></textarea><br />
+                            <button type="button" onClick={generateStyleImage}>Generate Style Image</button>
+                        </div>
+                    </div>
+                    
+                    <div className='right-section'>
+                        <div id="imagePlaceholder" className="image-placeholder">
+                            {isLoading && <p>Generating style image, please wait...</p>} {/* Display loading message when generating image */}
+                            {styleImageUrl && (
+                                <div>
+                                    <h2>Generated Style Image</h2>
+                                    <img src={styleImageUrl} alt="Generated Style" />
+                                </div>
+                            )}
+                            <p id="generationResult"></p>
+                        </div>
+
+                        <h2>Perform Style Transfer</h2>
+                        <button type="button" onClick={performStyleTransfer}>Transfer Style</button>
+                        <p id="transferResult"></p>
+                    </div>
                 </div>
-            )}
-            <p id="generationResult"></p>
-
-            <h2>Perform Style Transfer</h2>
-            <button type="button" onClick={performStyleTransfer}>Transfer Style</button>
-            <p id="transferResult"></p>
-
-            {/* Display the stylized and blended images if available */}
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
-                {stylizedImageUrl && (
-                    <div style={{ flex: 1 }}>
-                        <h3>Stylized Image</h3>
-                        <img src={stylizedImageUrl} alt="Stylized Image" style={{ width: '100%', height: 'auto' }} />
+            </div>
+           
+            <div className="results-section">
+                <div className="results-container">
+                    <h1>Result Image</h1>
+                    <div id="resultsPlaceholder" className="results-placeholder">
+                        {/* Display the stylized and blended images if available */}
+                        <div style={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
+                            {stylizedImageUrl && (
+                                <div style={{ flex: 1 }}>
+                                    <h3>Stylized Image</h3>
+                                    <img src={stylizedImageUrl} alt="Stylized Image" style={{ width: '100%', height: 'auto' }} />
+                                </div>
+                            )}
+                            {blendedImageUrl && (
+                                <div style={{ flex: 1 }}>
+                                    <h3>Blended Image</h3>
+                                    <img src={blendedImageUrl} alt="Blended Image" style={{ width: '100%', height: 'auto' }} />
+                                </div>
+                            )}
+                        </div>
                     </div>
-                )}
-                {blendedImageUrl && (
-                    <div style={{ flex: 1 }}>
-                        <h3>Blended Image</h3>
-                        <img src={blendedImageUrl} alt="Blended Image" style={{ width: '100%', height: 'auto' }} />
-                    </div>
-                )}
+                    <div id="caption" className="caption">Caption: Default Caption</div>
+                </div>
             </div>
         </div>
     );
