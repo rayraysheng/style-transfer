@@ -15,12 +15,26 @@ h2 {
     text-align: left;
 }
 
+h3 {
+    color: #0D0221;
+}
+
+.intro {
+    text-align: center;
+    color: #ffffff;
+}
+
 .wrapper {
     display: flex;
+    flex-direction: column;
     justify-content: space-between; 
     max-width: 1500px;
     margin: 0 auto;
     background-color: #B8BFF8;
+}
+
+#content-container {
+    display: flex;
 }
 
 .content-image-container {
@@ -29,6 +43,7 @@ h2 {
 
 .image-mood-container {
     width: 60%;
+    flex-grow: 1;
 }
 
 .title-container,
@@ -55,6 +70,7 @@ h2 {
     background-color: #f0f0f0;
     overflow: hidden;
     position: relative;
+    height: 70%;
 }
 
 #preview img {
@@ -280,6 +296,8 @@ h2 {
     max-width: 1500px;
     margin: 0 auto;
     background-color: #B8BFF8;
+    margin-top: auto;
+    width: 100%;
 }
 
 .results-container{
@@ -290,6 +308,10 @@ h2 {
     border-radius: 5px;
     background-color: #0D0221;
     color: #fff;
+}
+
+.results-container>* {
+    flex: 1 1 100%;
 }
 
 .results-placeholder {
